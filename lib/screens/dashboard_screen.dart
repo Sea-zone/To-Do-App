@@ -4,6 +4,18 @@ import '../constants/color.dart';
 import '../model/todo.dart';
 import '../widgets/todo_item.dart';
 
+final lightTheme = ThemeData(
+  brightness: Brightness.light,
+  primaryColor: Colors.blue, // Customize as needed
+  // Add other light theme properties
+);
+
+final darkTheme = ThemeData(
+  brightness: Brightness.dark,
+  primaryColor: Colors.indigo, // Customize as needed
+  // Add other dark theme properties
+);
+
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
 
