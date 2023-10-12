@@ -4,10 +4,16 @@ import '../constants/color.dart';
 import '../model/todo.dart';
 import '../widgets/todo_item.dart';
 
-class Dashboard extends StatelessWidget {
-  Dashboard({super.key});
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
 
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
   final todoList = ToDo.todoList();
+  final _todoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +49,8 @@ class Dashboard extends StatelessWidget {
                       for (ToDo todoo in todoList)
                         ToDoItem(
                           todo: todoo,
+                          onToDoChanged: _handleToDoChange,
+                          onDeleteItem: _deleteToDoItem,
                         ),
                     ],
                   ),
@@ -78,8 +86,9 @@ class Dashboard extends StatelessWidget {
                       ],
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    child: const TextField(
-                      decoration: InputDecoration(
+                    child: TextField(
+                      controller: _todoController,
+                      decoration: const InputDecoration(
                         hintText: "Add a new to do Item",
                         border: InputBorder.none,
                       ),
@@ -92,7 +101,9 @@ class Dashboard extends StatelessWidget {
                     right: 20,
                   ),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _addToDoItem(_todoController.text);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                       minimumSize: const Size(60, 60),
@@ -110,6 +121,29 @@ class Dashboard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _handleToDoChange(ToDo? todo) {
+    if (todo != null) {
+      setState(() {
+        todo.isDone = !(todo.isDone ?? false);
+      });
+    }
+  }
+
+  void _deleteToDoItem(String id) {
+    setState(() {
+      todoList.removeWhere((item) => item.id == id);
+    });
+  }
+
+  void _addToDoItem(String toDo) {
+    setState(() {
+      todoList.add(ToDo(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          todoText: toDo));
+    });
+    _todoController.clear();
   }
 
   Widget searchBox() {
